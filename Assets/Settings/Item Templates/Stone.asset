@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df7dd42a643c31f4ea5ceb2f015ee16c, type: 3}
+  m_Name: Stone
+  m_EditorClassIdentifier: 
+  Meshes:
+  - {fileID: -8213443026856553256, guid: dd6e5a866db5a0e409f9b9d5d8524e37, type: 3}
+  Materials:
+  - {fileID: 2100000, guid: a7f5705e70baa8344930db2eabaa3aff, type: 2}
+  - {fileID: 2100000, guid: 34b9704f3c2d32a42a27d5129180ab93, type: 2}
+  - {fileID: 2100000, guid: efdd7d2ffa7519241860553938172581, type: 2}

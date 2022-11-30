@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27cf20f53376b63498b80da0d0730102, type: 3}
+  m_Name: CrateTemplate
+  m_EditorClassIdentifier: 
+  Meshes:
+  - {fileID: -8213443026856553256, guid: e22512c0e08160e4fbe5eef32b71bfdc, type: 3}
+  Materials:
+  - {fileID: 2100000, guid: a4779db336bb59f4685440fd53d22ff1, type: 2}
+  CrateMaxItemCount: 20
