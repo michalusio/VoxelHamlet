@@ -842,8 +842,8 @@ MonoBehaviour:
   GnomePrefab: {fileID: 7147820766737573573, guid: 6efd0d34d4a00b44389d6e9cb56a2897,
     type: 3}
   globalSettings: {fileID: 11400000, guid: f06eaf2fc9eb5024ba8249ddb8569cd6, type: 2}
-  W: 256
-  D: 256
+  W: 1024
+  D: 1024
 --- !u!114 &163694099
 MonoBehaviour:
   m_ObjectHideFlags: 0
