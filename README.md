@@ -13,8 +13,13 @@ The game is inspired by games such as CastleStory and StoneHearth.
 ## License
 
 All rights reserved, except:
-The source code of the game can be viewed and forked (as is the Github policy)
- and you can draw inspirations from it, but no redistribution, copying, modifying outside of Github is allowed.
+
+The source code of the game can be viewed and forked (as is the Github policy) and you can draw inspirations from it, but no redistribution, copying, modifying outside of Github is allowed.
+
 You also cannot sell, re-sell, market or copyright the game and/or the source code as your own.
 
-The licenses for the libraries used in the code are in the same folder as the library itself.
+Michał Isalski is the righteous copyright holder for the game's code.
+
+Daniel Ligocki is the rightous copyright holder for the models and animations used.
+
+The licenses for the libraries used are in the same folder as the library itself.
