@@ -22,7 +22,7 @@ namespace Assets.Scripts.WorldGen
                 {
                     for (byte ix = sx; ix <= ex; ix++)
                     {
-                        var index = iz * CubeMap.RegionSizeSquared + iy * CubeMap.RegionSize + ix;
+                        var index = (((iz << CubeMap.RegionSizeShift) + iy) << CubeMap.RegionSizeShift) + ix;
                         alreadyMeshed[index] = true;
                     }
                 }

@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using System.Collections;
 using System;
@@ -276,3 +277,4 @@ public class FXAAEditor : Editor
 		EditorGUILayout.EndVertical();
 	}
 }
+#endif

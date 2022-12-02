@@ -2,7 +2,6 @@
 using Assets.Scripts.WorldGen.RandomUpdaters;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -22,9 +21,9 @@ namespace Assets.Scripts.WorldGen
         public readonly int D;
 
         private readonly Dictionary<Vector3Int, Chunk> Chunks;
-        public ReadOnlyDictionary<Vector3Int, Chunk> GetChunks => new ReadOnlyDictionary<Vector3Int, Chunk>(Chunks);
+        public IReadOnlyDictionary<Vector3Int, Chunk> GetChunks => Chunks;
 
-        private readonly Dictionary<Vector3Int, (Mesh px, Mesh nx, Mesh py, Mesh ny, Mesh pz, Mesh nz)> Meshes;
+        private readonly Dictionary<Vector3Int, Mesh> Meshes;
 
         public readonly List<IRandomUpdater> Updaters;
 
@@ -36,7 +35,7 @@ namespace Assets.Scripts.WorldGen
             H = RegionSize * ((h + RegionSize - 1) / RegionSize);
             D = RegionSize * ((d + RegionSize - 1) / RegionSize);
             Chunks = new Dictionary<Vector3Int, Chunk>();
-            Meshes = new Dictionary<Vector3Int, (Mesh px, Mesh nx, Mesh py, Mesh ny, Mesh pz, Mesh nz)>();
+            Meshes = new Dictionary<Vector3Int, Mesh>();
             Updaters = new List<IRandomUpdater>();
             dataMeshes = new List<(DataMesh chunkMesh, Vector3Int position)>();
             for (int x = 0; x < W / RegionSize; x++)
@@ -228,15 +227,8 @@ namespace Assets.Scripts.WorldGen
 
             foreach (var (chunkMesh, position) in dataMeshes)
             {
-                Meshes.TryGetValue(position, out (Mesh px, Mesh nx, Mesh py, Mesh ny, Mesh pz, Mesh nz) mesh);
-
-                LoadChunkIntoMesh(ref mesh.px, chunkMesh.vertexListPX, chunkMesh.indexListPX, ref vertexDescriptor, ref bounds);
-                LoadChunkIntoMesh(ref mesh.nx, chunkMesh.vertexListNX, chunkMesh.indexListNX, ref vertexDescriptor, ref bounds);
-                LoadChunkIntoMesh(ref mesh.py, chunkMesh.vertexListPY, chunkMesh.indexListPY, ref vertexDescriptor, ref bounds);
-                LoadChunkIntoMesh(ref mesh.ny, chunkMesh.vertexListNY, chunkMesh.indexListNY, ref vertexDescriptor, ref bounds);
-                LoadChunkIntoMesh(ref mesh.pz, chunkMesh.vertexListPZ, chunkMesh.indexListPZ, ref vertexDescriptor, ref bounds);
-                LoadChunkIntoMesh(ref mesh.nz, chunkMesh.vertexListNZ, chunkMesh.indexListNZ, ref vertexDescriptor, ref bounds);
-
+                Meshes.TryGetValue(position, out Mesh mesh);
+                LoadChunkIntoMesh(ref mesh, chunkMesh.vertexList, chunkMesh.indexList, ref vertexDescriptor, ref bounds);
                 Meshes[position] = mesh;
             }
             if (dataMeshes.Count > 0) Debug.Log($"Updated {dataMeshes.Count} meshes in {updateWatcher.ElapsedMilliseconds}ms");
@@ -244,7 +236,7 @@ namespace Assets.Scripts.WorldGen
         }
 
         /// <summary>
-        /// Loads the chunk face data into a specified mesh.
+        /// Loads the chunk data into a specified mesh.
         /// </summary>
         private void LoadChunkIntoMesh(ref Mesh m, List<ChunkVertex> vertexList, List<int> indexList, ref VertexAttributeDescriptor descriptor, ref Bounds bounds)
         {
@@ -258,56 +250,32 @@ namespace Assets.Scripts.WorldGen
                 }
                 m.SetVertexBufferParams(vertexList.Count, descriptor);
                 m.SetVertexBufferData(vertexList, 0, 0, vertexList.Count, flags: (MeshUpdateFlags)15);
-                m.SetIndices(indexList, MeshTopology.Quads, 0, false);
+                m.SetIndices(indexList.ConvertAll(i => (ushort)i), MeshTopology.Quads, 0, false);
                 m.UploadMeshData(false);
             }
             else if (m) m.Clear(false);
         }
 
-        internal void DrawMeshes(Camera camera, Material material, string layerName = "Terrain", Vector3 offset = default, bool shadows = true, bool now = false)
+        internal void DrawMeshes(Camera camera, Material material, string layerName = "Terrain", Vector3 offset = default, bool shadows = true)
         {
+            var renderRange = GlobalSettings.Variables["RenderRange"].AsInt();
             var layer = LayerMask.NameToLayer(layerName);
             var cameraPos = camera.transform.position - offset;
             var cameraChunkKey = new Vector3Int(Mathf.FloorToInt(cameraPos.x) >> RegionSizeShift, Mathf.FloorToInt(cameraPos.y) >> RegionSizeShift, Mathf.FloorToInt(cameraPos.z) >> RegionSizeShift);
-            var halfSize = RegionSize;
             var diffKey = new Vector3Int();
-            var call = now ? (Action<Mesh, Matrix4x4, Material, int, Camera, int, MaterialPropertyBlock, ShadowCastingMode, bool>)((mesh, matrix, _, __, ___, ____, _____, ______, _______) => Graphics.DrawMeshNow(mesh, matrix)) : Graphics.DrawMesh;
-            for (int x = -5; x <= 5; x++)
+            for (int x = -renderRange; x <= renderRange; x++)
             {
                 diffKey.x = x;
-                for (int z = -5; z <= 5; z++)
+                for (int z = -renderRange; z <= renderRange; z++)
                 {
                     diffKey.z = z;
-                    for (int y = -5; y <= 5; y++)
+                    for (int y = -renderRange; y <= renderRange; y++)
                     {
                         diffKey.y = y;
                         var chunkKey = (cameraChunkKey + diffKey) * RegionSize;
                         if (!Meshes.TryGetValue(chunkKey, out var mesh)) continue;
-                        bool drawPX = mesh.px && Utils.IsVisibleFrom(Vector3.left, chunkKey - new Vector3(halfSize, 0, 0), cameraPos);
-                        bool drawNX = mesh.nx && Utils.IsVisibleFrom(Vector3.right, chunkKey + new Vector3(halfSize, 0, 0), cameraPos);
-
-                        bool drawPZ = mesh.pz && Utils.IsVisibleFrom(Vector3.back, chunkKey - new Vector3(0, 0, halfSize), cameraPos);
-                        bool drawNZ = mesh.nz && Utils.IsVisibleFrom(Vector3.forward, chunkKey + new Vector3(0, 0, halfSize), cameraPos);
-
-                        bool drawPY = mesh.py && Utils.IsVisibleFrom(Vector3.down, chunkKey - new Vector3(0, halfSize, 0), cameraPos);
-                        bool drawNY = mesh.ny && Utils.IsVisibleFrom(Vector3.up, chunkKey + new Vector3(0, halfSize, 0), cameraPos);
-
                         var matrix = Matrix4x4.Translate(chunkKey + offset);
-
-                        if (drawPX)
-                            Graphics.DrawMesh(mesh.px, matrix, material, layer, camera, 0, null, shadows ? ShadowCastingMode.TwoSided : ShadowCastingMode.Off, shadows);
-                        if (drawNX)
-                            Graphics.DrawMesh(mesh.nx, matrix, material, layer, camera, 0, null, shadows ? ShadowCastingMode.TwoSided : ShadowCastingMode.Off, shadows);
-
-                        if (drawPY)
-                            Graphics.DrawMesh(mesh.py, matrix, material, layer, camera, 0, null, shadows ? ShadowCastingMode.TwoSided : ShadowCastingMode.Off, shadows);
-                        if (drawNY)
-                            Graphics.DrawMesh(mesh.ny, matrix, material, layer, camera, 0, null, shadows ? ShadowCastingMode.TwoSided : ShadowCastingMode.Off, shadows);
-
-                        if (drawPZ)
-                            Graphics.DrawMesh(mesh.pz, matrix, material, layer, camera, 0, null, shadows ? ShadowCastingMode.TwoSided : ShadowCastingMode.Off, shadows);
-                        if (drawNZ)
-                            Graphics.DrawMesh(mesh.nz, matrix, material, layer, camera, 0, null, shadows ? ShadowCastingMode.TwoSided : ShadowCastingMode.Off, shadows);
+                        Graphics.DrawMesh(mesh, matrix, material, layer, camera, 0, null, shadows ? ShadowCastingMode.TwoSided : ShadowCastingMode.Off, shadows);
                     }
                 }
             }

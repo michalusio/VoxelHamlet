@@ -21,3 +21,5 @@ MonoBehaviour:
     value: 500
   - name: ChunkSizeShift
     value: 6
+  - name: RenderRange
+    value: 15

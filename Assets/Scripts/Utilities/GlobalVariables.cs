@@ -32,8 +32,6 @@ namespace Assets.Scripts.Utilities
             [SerializeField] public string name;
             [SerializeField] public string value;
 
-            private int parsedIntValue = int.MinValue;
-
             public string AsString()
             {
                 return value;
@@ -41,11 +39,7 @@ namespace Assets.Scripts.Utilities
 
             public int AsInt()
             {
-                if (parsedIntValue == int.MinValue)
-                {
-                    parsedIntValue = int.Parse(value);
-                }
-                return parsedIntValue;
+                return int.Parse(value);
             }
         }
     }

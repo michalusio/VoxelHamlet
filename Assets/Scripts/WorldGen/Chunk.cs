@@ -4,14 +4,15 @@ using UnityEngine;
 
 namespace Assets.Scripts.WorldGen
 {
-    public partial class Chunk
+    public class Chunk
     {
         private Block[] Blocks;
         private bool[] alreadyMeshed;
         private readonly byte[] airAround;
 
-        private readonly List<ChunkVertex> vertexListPX, vertexListNX, vertexListPY, vertexListNY, vertexListPZ, vertexListNZ;
-        private readonly List<int> indexListPX, indexListNX, indexListPY, indexListNY, indexListPZ, indexListNZ;
+        private readonly List<ChunkVertex> vertexList;
+        private readonly List<int> indexList;
+
         private readonly CubeMap map;
 
         private Chunk chunkPX, chunkNX, chunkPZ, chunkNZ, chunkPY, chunkNY;
@@ -21,19 +22,8 @@ namespace Assets.Scripts.WorldGen
         public Chunk(CubeMap cubeMap)
         {
             map = cubeMap;
-            vertexListPX = new List<ChunkVertex>(CubeMap.RegionSize);
-            vertexListNX = new List<ChunkVertex>(CubeMap.RegionSize);
-            vertexListPY = new List<ChunkVertex>(CubeMap.RegionSize);
-            vertexListNY = new List<ChunkVertex>(CubeMap.RegionSize);
-            vertexListPZ = new List<ChunkVertex>(CubeMap.RegionSize);
-            vertexListNZ = new List<ChunkVertex>(CubeMap.RegionSize);
-
-            indexListPX = new List<int>(CubeMap.RegionSize);
-            indexListNX = new List<int>(CubeMap.RegionSize);
-            indexListPY = new List<int>(CubeMap.RegionSize);
-            indexListNY = new List<int>(CubeMap.RegionSize);
-            indexListPZ = new List<int>(CubeMap.RegionSize);
-            indexListNZ = new List<int>(CubeMap.RegionSize);
+            vertexList = new List<ChunkVertex>(CubeMap.RegionSizeSquared >> 1);
+            indexList = new List<int>(CubeMap.RegionSizeSquared >> 1);
             airAround = new byte[CubeMap.RegionSizeCubed];
             for (int a = 0; a < CubeMap.RegionSizeCubed; a++)
             {
@@ -98,28 +88,17 @@ namespace Assets.Scripts.WorldGen
 
         public DataMesh GenerateDataMesh()
         {
-            vertexListPX.Clear();
-            vertexListNX.Clear();
-            vertexListPY.Clear();
-            vertexListNY.Clear();
-            vertexListPZ.Clear();
-            vertexListNZ.Clear();
-                       
-            indexListPX.Clear();
-            indexListNX.Clear();
-            indexListPY.Clear();
-            indexListNY.Clear();
-            indexListPZ.Clear();
-            indexListNZ.Clear();
+            vertexList.Clear();
+            indexList.Clear();
 
             if (Blocks != null)
             {
                 var index = 0;
-                for (byte z = 0; z < CubeMap.RegionSize; z++)
+                for (var z = 0; z < CubeMap.RegionSize; z++)
                 {
-                    for (byte y = 0; y < CubeMap.RegionSize; y++)
+                    for (var y = 0; y < CubeMap.RegionSize; y++)
                     {
-                        for (byte x = 0; x < CubeMap.RegionSize; x++)
+                        for (var x = 0; x < CubeMap.RegionSize; x++)
                         {
                             if (Blocks[index].BlockType != BlockType.Air)
                             {
@@ -145,23 +124,15 @@ namespace Assets.Scripts.WorldGen
             }
 
             return new DataMesh(
-                vertexListPX, vertexListNX,
-                vertexListPY, vertexListNY,
-                vertexListPZ, vertexListNZ,
-                indexListPX, indexListNX,
-                indexListPY, indexListNY,
-                indexListPZ, indexListNZ);
+                vertexList,
+                indexList
+            );
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void AddNormalBlock(ref GreedyCube cube)
         {
-            var countPX = vertexListPX.Count;
-            var countPY = vertexListPY.Count;
-            var countPZ = vertexListPZ.Count;
-            var countNX = vertexListNX.Count;
-            var countNY = vertexListNY.Count;
-            var countNZ = vertexListNZ.Count;
+            var count = vertexList.Count;
 
             ChunkVertex v000 = default;
             ChunkVertex v001 = default;
@@ -184,69 +155,74 @@ namespace Assets.Scripts.WorldGen
             v100.blockIndex = v101.blockIndex = v110.blockIndex = v111.blockIndex = (byte)cube.id;
             if ((cube.ORFaceCount & 8) > 0)
             {
-                vertexListNX.Add(v000);
-                vertexListNX.Add(v010);
-                vertexListNX.Add(v001);
-                vertexListNX.Add(v011);
-                indexListNX.Add(countNX + 2);
-                indexListNX.Add(countNX + 3);
-                indexListNX.Add(countNX + 1);
-                indexListNX.Add(countNX);
+                vertexList.Add(v000);
+                vertexList.Add(v010);
+                vertexList.Add(v001);
+                vertexList.Add(v011);
+                indexList.Add(count + 2);
+                indexList.Add(count + 3);
+                indexList.Add(count + 1);
+                indexList.Add(count);
+                count += 4;
             }
             if ((cube.ORFaceCount & 16) > 0)
             {
-                vertexListNY.Add(v000);
-                vertexListNY.Add(v100);
-                vertexListNY.Add(v001);
-                vertexListNY.Add(v101);
-                indexListNY.Add(countNY);
-                indexListNY.Add(countNY + 1);
-                indexListNY.Add(countNY + 3);
-                indexListNY.Add(countNY + 2);
+                vertexList.Add(v000);
+                vertexList.Add(v100);
+                vertexList.Add(v001);
+                vertexList.Add(v101);
+                indexList.Add(count);
+                indexList.Add(count + 1);
+                indexList.Add(count + 3);
+                indexList.Add(count + 2);
+                count += 4;
             }
             if ((cube.ORFaceCount & 32) > 0)
             {
-                vertexListNZ.Add(v000);
-                vertexListNZ.Add(v100);
-                vertexListNZ.Add(v010);
-                vertexListNZ.Add(v110);
-                indexListNZ.Add(countNZ + 2);
-                indexListNZ.Add(countNZ + 3);
-                indexListNZ.Add(countNZ + 1);
-                indexListNZ.Add(countNZ);
+                vertexList.Add(v000);
+                vertexList.Add(v100);
+                vertexList.Add(v010);
+                vertexList.Add(v110);
+                indexList.Add(count + 2);
+                indexList.Add(count + 3);
+                indexList.Add(count + 1);
+                indexList.Add(count);
+                count += 4;
             }
             if ((cube.ORFaceCount & 1) > 0)
             {
-                vertexListPX.Add(v100);
-                vertexListPX.Add(v110);
-                vertexListPX.Add(v101);
-                vertexListPX.Add(v111);
-                indexListPX.Add(countPX);
-                indexListPX.Add(countPX + 1);
-                indexListPX.Add(countPX + 3);
-                indexListPX.Add(countPX + 2);
+                vertexList.Add(v100);
+                vertexList.Add(v110);
+                vertexList.Add(v101);
+                vertexList.Add(v111);
+                indexList.Add(count);
+                indexList.Add(count + 1);
+                indexList.Add(count + 3);
+                indexList.Add(count + 2);
+                count += 4;
             }
             if ((cube.ORFaceCount & 2) > 0)
             {
-                vertexListPY.Add(v010);
-                vertexListPY.Add(v110);
-                vertexListPY.Add(v011);
-                vertexListPY.Add(v111);
-                indexListPY.Add(countPY + 2);
-                indexListPY.Add(countPY + 3);
-                indexListPY.Add(countPY + 1);
-                indexListPY.Add(countPY);
+                vertexList.Add(v010);
+                vertexList.Add(v110);
+                vertexList.Add(v011);
+                vertexList.Add(v111);
+                indexList.Add(count + 2);
+                indexList.Add(count + 3);
+                indexList.Add(count + 1);
+                indexList.Add(count);
+                count += 4;
             }
             if ((cube.ORFaceCount & 4) > 0)
             {
-                vertexListPZ.Add(v001);
-                vertexListPZ.Add(v101);
-                vertexListPZ.Add(v011);
-                vertexListPZ.Add(v111);
-                indexListPZ.Add(countPZ);
-                indexListPZ.Add(countPZ + 1);
-                indexListPZ.Add(countPZ + 3);
-                indexListPZ.Add(countPZ + 2);
+                vertexList.Add(v001);
+                vertexList.Add(v101);
+                vertexList.Add(v011);
+                vertexList.Add(v111);
+                indexList.Add(count);
+                indexList.Add(count + 1);
+                indexList.Add(count + 3);
+                indexList.Add(count + 2);
             }
 
         }
@@ -257,11 +233,11 @@ namespace Assets.Scripts.WorldGen
             if (Blocks != null)
             {
                 var index = 0;
-                for (byte z = 0; z < CubeMap.RegionSize; z++)
+                for (var z = 0; z < CubeMap.RegionSize; z++)
                 {
-                    for (byte y = 0; y < CubeMap.RegionSize; y++)
+                    for (var y = 0; y < CubeMap.RegionSize; y++)
                     {
-                        for (byte x = 0; x < CubeMap.RegionSize; x++)
+                        for (var x = 0; x < CubeMap.RegionSize; x++)
                         {
                             if (Blocks[index].BlockType != BlockType.Air)
                             {
@@ -283,18 +259,18 @@ namespace Assets.Scripts.WorldGen
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void TryGreedyMesh(ref GreedyCube cube, byte sx, byte sy, byte sz)
+        private void TryGreedyMesh(ref GreedyCube cube, int sx, int sy, int sz)
         {
             var startIndex = (((sz << CubeMap.RegionSizeShift) + sy) << CubeMap.RegionSizeShift) + sx;
             var b = Blocks[startIndex];
-            cube.sx = sx;
-            cube.sy = sy;
-            cube.sz = sz;
+            cube.sx = (byte)sx;
+            cube.sy = (byte)sy;
+            cube.sz = (byte)sz;
             cube.id = b.BlockType;
             cube.entity = b.EntityInBlock;
             cube.ORFaceCount = airAround[startIndex];
-            cube.ez = sz;
-            for (byte z = (byte)(sz + 1); z < CubeMap.RegionSize; z++)
+            cube.ez = (byte)sz;
+            for (var z = sz + 1; z < CubeMap.RegionSize; z++)
             {
                 var index = (((z << CubeMap.RegionSizeShift) + sy) << CubeMap.RegionSizeShift) + sx;
                 cube.ORFaceCount |= airAround[index];
@@ -302,15 +278,15 @@ namespace Assets.Scripts.WorldGen
                 {
                     break;
                 }
-                cube.ez = z;
+                cube.ez = (byte)z;
             }
 
-            cube.ey = sy;
-            for (byte y = (byte)(sy + 1); y < CubeMap.RegionSize; y++)
+            cube.ey = (byte)sy;
+            for (var y = sy + 1; y < CubeMap.RegionSize; y++)
             {
                 bool passed = true;
-                byte orFace = 0;
-                for (byte z = sz; z <= cube.ez; z++)
+                var orFace = 0;
+                for (var z = sz; z <= cube.ez; z++)
                 {
                     var index = (((z << CubeMap.RegionSizeShift) + y) << CubeMap.RegionSizeShift) + sx;
                     orFace |= airAround[index];
@@ -322,19 +298,19 @@ namespace Assets.Scripts.WorldGen
                 }
                 if (passed)
                 {
-                    cube.ey = y;
-                    cube.ORFaceCount |= orFace;
+                    cube.ey = (byte)y;
+                    cube.ORFaceCount |= (byte)orFace;
                 }
                 else break;
             }
 
-            cube.ex = sx;
-            for (byte x = (byte)(sx + 1); x < CubeMap.RegionSize; x++)
+            cube.ex = (byte)sx;
+            for (var x = sx + 1; x < CubeMap.RegionSize; x++)
             {
-                byte orFace = 0;
-                for (byte y = sy; y <= cube.ey; y++)
+                var orFace = 0;
+                for (var y = sy; y <= cube.ey; y++)
                 {
-                    for (byte z = sz; z <= cube.ez; z++)
+                    for (var z = sz; z <= cube.ez; z++)
                     {
                         var index = (((z << CubeMap.RegionSizeShift) + y) << CubeMap.RegionSizeShift) + x;
                         orFace |= airAround[index];
@@ -344,8 +320,8 @@ namespace Assets.Scripts.WorldGen
                         }
                     }
                 }
-                cube.ex = x;
-                cube.ORFaceCount |= orFace;
+                cube.ex = (byte)x;
+                cube.ORFaceCount |= (byte)orFace;
             }
         }
 
@@ -389,7 +365,7 @@ namespace Assets.Scripts.WorldGen
 
         public bool HasAnyBlock()
         {
-            return Blocks != null && ((vertexListPX.Count + vertexListNX.Count + vertexListPY.Count + vertexListNY.Count + vertexListPZ.Count + vertexListNZ.Count) > 0 || Dirty);
+            return Blocks != null && (vertexList.Count > 0 || Dirty);
         }
     }
 }

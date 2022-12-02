@@ -3,7 +3,6 @@ using Assets.Scripts.Village;
 using Assets.Scripts.WorldGen.GenSteps;
 using Assets.Scripts.WorldGen.RandomUpdaters;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 using Stopwatch = System.Diagnostics.Stopwatch;
@@ -27,7 +26,8 @@ namespace Assets.Scripts.WorldGen
             new PlaceTerrain(32, 52),
             new PlaceOres(0.001f),
             //new ChopBottom(),
-            new PlaceTerrainDetails(20)
+            new PlaceTerrainDetails(20),
+            new PlaceTrees(0.001f)
         };
 
         void Start()

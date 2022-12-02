@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 //
 // Kino/Obscurance - Screen space ambient obscurance image effect
 //
@@ -107,3 +108,4 @@ namespace Kino
         }
     }
 }
+#endif

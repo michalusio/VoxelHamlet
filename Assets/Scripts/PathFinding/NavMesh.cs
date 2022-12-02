@@ -16,7 +16,9 @@ namespace Assets.Scripts.PathFinding
         void Start()
         {
             var navMeshWatcher = System.Diagnostics.Stopwatch.StartNew();
+#if UNITY_EDITOR
             if (!NavMeshChunk.QuadMesh) return;
+#endif
             NavChunks = GlobalSettings.Instance.Map.GetChunks
                 .ToDictionary(kv => kv.Key * CubeMap.RegionSize, kv => new NavMeshChunk(kv.Key * CubeMap.RegionSize, kv.Value));
             navMeshWatcher.Stop();
@@ -46,6 +48,7 @@ namespace Assets.Scripts.PathFinding
             }
         }
 
+#if UNITY_EDITOR
         void OnDrawGizmos()
         {
             if (MeshOpacity < 0.01f) return;
@@ -70,5 +73,6 @@ namespace Assets.Scripts.PathFinding
                 }
             }
         }
+#endif
     }
 }
