@@ -20,7 +20,7 @@ namespace Assets.Scripts.WorldGen.GenSteps
         public void Commit(CubeMap map)
         {
             var oreTries = (long)((long)map.W * map.H * map.D * (double)oreDensity);
-            Parallel.For(0, oreTries, _ =>
+            for (long i = 0; i < oreTries; i++)
             {
                 var random = ThreadRandoms.GetOrAdd(Thread.CurrentThread.ManagedThreadId, _ => new Random(new object().GetHashCode()));
                 var x = random.Next(0, map.W - 1);
@@ -38,7 +38,7 @@ namespace Assets.Scripts.WorldGen.GenSteps
                     chosenBlock = BlockType.IronOre;
                 }
                 PlaceOreBlob(map, chosenBlock, x, y, z);
-            });
+            }
         }
 
         private void PlaceOreBlob(CubeMap map, BlockType chosenBlock, int x, int y, int z)

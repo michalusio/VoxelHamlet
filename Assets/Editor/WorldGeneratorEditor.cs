@@ -13,9 +13,12 @@ namespace Assets.Scripts.Editors
             serializedObject.Update();
 
             DrawDefaultInspector();
+
+            var generator = (WorldGeneratorScript) serializedObject.targetObject;
+
             if (GUILayout.Button("Remake world"))
             {
-                ((WorldGeneratorScript)serializedObject.targetObject).RemakeWorld();
+                generator.RemakeWorld();
             }
 
             serializedObject.ApplyModifiedProperties();

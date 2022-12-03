@@ -1,7 +1,7 @@
 ﻿using Assets.Scripts.WorldGen;
 using UnityEngine;
 
-namespace Assets.Scripts.Utilities
+namespace Assets.Scripts.Utilities.Math
 {
     public static partial class RaycastUtils
     {

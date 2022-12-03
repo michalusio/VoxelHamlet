@@ -1,5 +1,5 @@
 ﻿using Assets.Scripts.Jobs;
-using Assets.Scripts.Utilities;
+using Assets.Scripts.Utilities.Math;
 using System;
 using System.Collections.Generic;
 using System.Linq;

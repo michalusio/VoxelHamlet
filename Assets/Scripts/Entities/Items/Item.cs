@@ -1,6 +1,6 @@
-﻿using Assets.Scripts.Entities;
+﻿using Assets.Scripts.ConfigScripts;
+using Assets.Scripts.Entities;
 using Assets.Scripts.PathFinding;
-using Assets.Scripts.Utilities;
 using Assets.Scripts.WorldGen;
 using System.Text;
 using UnityEngine;

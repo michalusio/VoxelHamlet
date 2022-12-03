@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.WorldGen;
+﻿using Assets.Scripts.ConfigScripts;
+using Assets.Scripts.WorldGen;
 using System.Collections.Generic;
 using UnityEngine;
 

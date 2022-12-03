@@ -1,6 +1,5 @@
 ﻿using LibNoise;
 using LibNoise.Generator;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Assets.Scripts.WorldGen.GenSteps
@@ -19,7 +18,7 @@ namespace Assets.Scripts.WorldGen.GenSteps
         public void Commit(CubeMap map)
         {
             var noise = new RidgedMultifractal(1, 2, 3, Time.frameCount, QualityMode.High);
-            Parallel.ForEach(map.GetChunks, kv =>
+            foreach (var kv in map.GetChunks)
             {
                 int chunkY = kv.Key.y * CubeMap.RegionSize;
 
@@ -65,7 +64,7 @@ namespace Assets.Scripts.WorldGen.GenSteps
                         }
                     }
                 }
-            });
+            }
         }
     }
 }

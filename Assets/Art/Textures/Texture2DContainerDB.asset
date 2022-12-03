@@ -9,23 +9,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 338d4eb75a7f6e74caf3dc74cf963de9, type: 3}
+  m_Script: {fileID: 11500000, guid: bae63ec96b1b6b644b0d47cbfc2a7816, type: 3}
   m_Name: Texture2DContainerDB
   m_EditorClassIdentifier: 
-  MIP_COUNT: 3
+  MIP_COUNT: 4
   AlbedoTextures:
   - {fileID: 0}
   - {fileID: 2800000, guid: 6b9fadc4b64048d4c9d9aa89749a4882, type: 3}
   - {fileID: 2800000, guid: bef93fd39cc1455439dd147bef6e56f3, type: 3}
   - {fileID: 2800000, guid: df70eca90ae0c834bb51bcea12e5741b, type: 3}
   - {fileID: 2800000, guid: ba23cd105cd795a4498bde121bf2bf5e, type: 3}
-  - {fileID: 2800000, guid: 3682a78a6e52ee04e99b8ae862ce5670, type: 3}
-  - {fileID: 2800000, guid: cd6a3e4827b814a43a83349eff4861e0, type: 3}
-  - {fileID: 2800000, guid: 7dc5429e31022ac44a56928aea4af309, type: 3}
-  - {fileID: 2800000, guid: 0821bc4b83ae5b04695e5a61a2e6fcba, type: 3}
-  - {fileID: 2800000, guid: be0f86923b8c3b04888eacf99c9bce9f, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 2800000, guid: 29afda1175e9051448464b43d754cf12, type: 3}
-  - {fileID: 2800000, guid: baf112ee5697b89448f7e49f19366596, type: 3}
+  - {fileID: 0}
   - {fileID: 2800000, guid: e03a1554b0745ef4a87d07b6c63e0886, type: 3}
   - {fileID: 2800000, guid: 753145d30ee52944e96b71cca75d57e2, type: 3}
   - {fileID: 2800000, guid: 874c925e788a08749b2e30ab09ecab9f, type: 3}

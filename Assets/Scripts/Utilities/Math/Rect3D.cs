@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Assets.Scripts.Utilities
+namespace Assets.Scripts.Utilities.Math
 {
     public struct Rect3Int
     {

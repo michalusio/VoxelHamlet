@@ -9,17 +9,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a217d61bc3fd8042bd7f9256b008db3, type: 3}
+  m_Script: {fileID: 11500000, guid: 831f37d45d9df664aacca79ed4d327b4, type: 3}
   m_Name: GlobalVariablesDB
   m_EditorClassIdentifier: 
   variables:
-  - name: GrassSpreadSpeed
-    value: 4
-  - name: Gravity
-    value: 4
-  - name: PathFinderMaxIterations
-    value: 500
   - name: ChunkSizeShift
     value: 6
   - name: RenderRange
-    value: 15
+    value: 6
+  - name: GrassSpreadSpeed
+    value: 6
+  - name: Gravity
+    value: 1
+  - name: PathFinderMaxIterations
+    value: 500

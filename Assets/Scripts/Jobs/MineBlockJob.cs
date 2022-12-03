@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.PathFinding;
+﻿using Assets.Scripts.ConfigScripts;
+using Assets.Scripts.PathFinding;
 using Assets.Scripts.Utilities;
 using Assets.Scripts.Village;
 using Assets.Scripts.WorldGen;

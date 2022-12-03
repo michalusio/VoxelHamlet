@@ -1,15 +1,12 @@
-﻿using Assets.Scripts.Entities;
-
-namespace Assets.Scripts.WorldGen
+﻿namespace Assets.Scripts.WorldGen
 {
     public struct Block
     {
-        public Entity EntityInBlock;
         public BlockType BlockType;
 
         public static bool operator ==(Block a, Block b)
         {
-            return a.BlockType == b.BlockType && a.EntityInBlock == b.EntityInBlock;
+            return a.BlockType == b.BlockType;
         }
 
         public static bool operator !=(Block a, Block b)
@@ -26,7 +23,7 @@ namespace Assets.Scripts.WorldGen
         {
             unchecked
             {
-                return BlockType.GetHashCode() * 13 + EntityInBlock.GetHashCode();
+                return BlockType.GetHashCode();
             }
         }
     }

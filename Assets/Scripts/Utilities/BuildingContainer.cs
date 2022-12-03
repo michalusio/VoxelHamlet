@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.WorldGen;
+﻿using Assets.Scripts.Utilities.Math;
+using Assets.Scripts.WorldGen;
 using System;
 using System.Collections.Generic;
 using System.Linq;

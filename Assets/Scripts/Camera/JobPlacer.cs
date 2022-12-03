@@ -1,6 +1,6 @@
-﻿using Assets.Scripts.Jobs;
+﻿using Assets.Scripts.ConfigScripts;
 using Assets.Scripts.PathFinding;
-using Assets.Scripts.Utilities;
+using Assets.Scripts.Utilities.Math;
 using Assets.Scripts.Village;
 using UnityEngine;
 using UnityEngine.EventSystems;

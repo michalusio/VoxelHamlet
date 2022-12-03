@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 
-namespace Assets.Scripts.Utilities
+namespace Assets.Scripts.ConfigScripts
 {
     [CreateAssetMenu(fileName = "GlobalSettingsDB", menuName = "GlobalSettings", order = 0)]
     public class GlobalSettings : ScriptableObject

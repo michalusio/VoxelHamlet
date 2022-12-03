@@ -1,7 +1,8 @@
-﻿using Assets.Scripts.Entities;
+﻿using Assets.Scripts.ConfigScripts;
+using Assets.Scripts.Entities;
 using Assets.Scripts.Entities.Objects;
 using Assets.Scripts.Items;
-using Assets.Scripts.Utilities;
+using Assets.Scripts.Utilities.Math;
 using UnityEngine;
 
 namespace Assets.Scripts.Village

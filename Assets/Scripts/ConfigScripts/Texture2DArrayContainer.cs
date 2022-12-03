@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Assets.Scripts.Utilities
+namespace Assets.Scripts.ConfigScripts
 {
     [CreateAssetMenu(fileName = "Texture2DContainerDB", menuName = "Texture2DContainer", order = 4)]
     public class Texture2DArrayContainer : ScriptableObject

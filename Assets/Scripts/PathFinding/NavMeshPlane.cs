@@ -21,8 +21,8 @@ namespace Assets.Scripts.PathFinding
             {
                 for (byte ix = minX; ix <= maxX; ix++)
                 {
-                    var index = (iz << CubeMap.RegionSizeShift) + ix;
-                    alreadyMeshed[index] = true;
+                    var alreadyIndex = (((iz << CubeMap.RegionSizeShift) + Y) << CubeMap.RegionSizeShift) + ix;
+                    alreadyMeshed[alreadyIndex] = true;
                 }
             }
         }
@@ -34,8 +34,8 @@ namespace Assets.Scripts.PathFinding
             {
                 for (byte ix = minX; ix <= maxX; ix++)
                 {
-                    var index = (iz << CubeMap.RegionSizeShift) + ix;
-                    alreadyMeshed[index] = false;
+                    var alreadyIndex = (((iz << CubeMap.RegionSizeShift) + Y) << CubeMap.RegionSizeShift) + ix;
+                    alreadyMeshed[alreadyIndex] = false;
                 }
             }
         }
@@ -51,6 +51,11 @@ namespace Assets.Scripts.PathFinding
         public int Area()
         {
             return (maxX - minX + 1) * (maxZ - minZ + 1);
+        }
+
+        public override string ToString()
+        {
+            return $"({minX}, {minZ}) to ({maxX}, {maxZ}) [Y: {Y}]";
         }
     }
 }

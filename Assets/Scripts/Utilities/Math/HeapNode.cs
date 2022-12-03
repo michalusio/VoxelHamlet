@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Assets.Scripts.Utilities
+﻿namespace Assets.Scripts.Utilities.Math
 {
     /// <summary>
     ///     Struct used in heap, working like Key-Value Pair.
@@ -57,7 +55,7 @@ namespace Assets.Scripts.Utilities
         public static bool operator ==(HeapNode<T> a, HeapNode<T> b)
         {
             if (b != null && a != null)
-                return Math.Abs(a.Priority - b.Priority) < 2.80259692864963E-45;
+                return System.Math.Abs(a.Priority - b.Priority) < 2.80259692864963E-45;
             return false;
         }
 

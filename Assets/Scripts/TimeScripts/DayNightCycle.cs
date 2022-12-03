@@ -1,7 +1,7 @@
-﻿using Assets.Scripts.Utilities;
+﻿using Assets.Scripts.ConfigScripts;
 using UnityEngine;
 
-namespace Assets.Scripts
+namespace Assets.Scripts.TimeScripts
 {
     [RequireComponent(typeof(Light))]
     public class DayNightCycle : MonoBehaviour

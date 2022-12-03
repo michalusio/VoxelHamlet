@@ -1,6 +1,7 @@
-﻿using Assets.Scripts.Items;
+﻿using Assets.Scripts.ConfigScripts;
+using Assets.Scripts.Items;
 using Assets.Scripts.Jobs;
-using Assets.Scripts.Utilities;
+using Assets.Scripts.Utilities.Math;
 using Assets.Scripts.WorldGen;
 using System;
 using System.Collections;

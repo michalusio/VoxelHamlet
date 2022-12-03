@@ -805,6 +805,7 @@ GameObject:
   - component: {fileID: 163694098}
   - component: {fileID: 163694099}
   - component: {fileID: 163694100}
+  - component: {fileID: 163694101}
   m_Layer: 8
   m_Name: World
   m_TagString: Untagged
@@ -843,8 +844,8 @@ MonoBehaviour:
   GnomePrefab: {fileID: 7147820766737573573, guid: 6efd0d34d4a00b44389d6e9cb56a2897,
     type: 3}
   globalSettings: {fileID: 11400000, guid: f06eaf2fc9eb5024ba8249ddb8569cd6, type: 2}
-  W: 1024
-  D: 1024
+  W: 64
+  D: 64
 --- !u!114 &163694099
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -873,7 +874,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20a4bad1d37ec844897193e10b1015df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MeshOpacity: 0
+  MeshOpacity: 0.724
+--- !u!114 &163694101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 163694096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93b0741901c166f408a3d07b044f467e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FramesThrottle: 5
 --- !u!1 &168778226
 GameObject:
   m_ObjectHideFlags: 0
@@ -2623,7 +2637,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 705507993}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ee735dd85eddfed40ad1add30321fc39, type: 3}
+  m_Script: {fileID: 11500000, guid: bbf2625870a1c104089a5fc4b2f83880, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   TimeSpeed: 1800
@@ -4367,13 +4381,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.24663556, y: 0.29287022, z: -0.07847435, w: 0.9204563}
+  m_LocalRotation: {x: 0.117300116, y: -0.86102855, z: 0.23071195, w: 0.43776992}
   m_LocalPosition: {x: 100.5, y: 106.4, z: 44.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 30, y: 35.3, z: 0}
+  m_LocalEulerAnglesHint: {x: 30, y: -126.1, z: 0}
 --- !u!114 &963194229
 MonoBehaviour:
   m_ObjectHideFlags: 0

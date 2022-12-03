@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-namespace Assets.Scripts.Utilities
+namespace Assets.Scripts.ConfigScripts
 {
     public class Texture2DArrayCreator : ScriptableObject
     {

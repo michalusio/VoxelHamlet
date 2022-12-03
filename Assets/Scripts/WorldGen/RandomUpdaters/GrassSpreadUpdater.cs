@@ -1,5 +1,5 @@
-﻿using Assets.Scripts.PathFinding;
-using Assets.Scripts.Utilities;
+﻿using Assets.Scripts.ConfigScripts;
+using Assets.Scripts.PathFinding;
 using UnityEngine;
 
 namespace Assets.Scripts.WorldGen.RandomUpdaters

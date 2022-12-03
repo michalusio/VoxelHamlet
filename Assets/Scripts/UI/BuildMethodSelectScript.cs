@@ -1,5 +1,7 @@
-﻿using Assets.Scripts.Entities;
+﻿using Assets.Scripts.ConfigScripts;
+using Assets.Scripts.Entities;
 using Assets.Scripts.Utilities;
+using Assets.Scripts.Utilities.Math;
 using Assets.Scripts.WorldGen;
 using System;
 using System.Collections.Generic;
@@ -22,8 +24,8 @@ namespace Assets.Scripts.UI
 
         private List<BlockSnapshot> snapshots;
 
-        private List<AreaBlockHandle> basicHandles = new List<AreaBlockHandle>();
-        private List<BlockHandle> toolHandles = new List<BlockHandle>();
+        private readonly List<AreaBlockHandle> basicHandles = new List<AreaBlockHandle>();
+        private readonly List<BlockHandle> toolHandles = new List<BlockHandle>();
 
         private const int WallHeight = 5;
 
@@ -613,7 +615,6 @@ namespace Assets.Scripts.UI
         public void CreateBasicHandles()
         {
             if (basicHandles.Count != 0) return;
-            Debug.Log("Creating handles");
             var editMode = GlobalSettings.Instance.EditMode;
             var handleX = new AreaBlockHandle(
                         BlockHandle.HandleType.X,

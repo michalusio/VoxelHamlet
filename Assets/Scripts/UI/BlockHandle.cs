@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Utilities;
+﻿using Assets.Scripts.ConfigScripts;
+using Assets.Scripts.Utilities;
 using System;
 using UnityEngine;
 

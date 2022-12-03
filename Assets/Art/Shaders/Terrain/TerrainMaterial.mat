@@ -89,7 +89,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _AddColor: {r: 1, g: 1, b: 1, a: 1}
-    - _CameraPos: {r: 228.39441, g: 179.85251, b: 0.09739351, a: 0}
+    - _CameraPos: {r: 41.77516, g: 76.303185, b: 2.1114025, a: 0}
     - _Color: {r: 0.34503764, g: 0.566, b: 0.202062, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []

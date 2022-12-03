@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Entities;
+﻿using Assets.Scripts.ConfigScripts;
+using Assets.Scripts.Entities;
 using Assets.Scripts.Jobs;
 using Assets.Scripts.Utilities;
 using Assets.Scripts.WorldGen;
@@ -37,8 +38,8 @@ namespace Assets.Scripts.UI
             var building = BuildingContainer.FromMap(GlobalSettings.Instance.EditMode.EditMap, GlobalSettings.Instance.EditMode.EditSize);
 
             (var averagePosition, var averageDistribution) = building.GetBlockStatistics();
-            Debug.Log("Average Pos: " + averagePosition);
-            Debug.Log("Distribution: " + averageDistribution);
+            DynamicLogger.Log("SaveStructure", "Average Pos:", averagePosition);
+            DynamicLogger.Log("SaveStructure", "Distribution:", averageDistribution);
 
             GlobalSettings.Instance.EditMode.EditScreenshotCamera.transform.localPosition = averagePosition - averageDistribution * 2 * GlobalSettings.Instance.EditMode.ScreenshotForward;
 

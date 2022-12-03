@@ -1,7 +1,6 @@
-﻿using Assets.Scripts.Utilities;
+﻿using Assets.Scripts.ConfigScripts;
 using Assets.Scripts.WorldGen;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Assets.Scripts.PathFinding
@@ -11,37 +10,42 @@ namespace Assets.Scripts.PathFinding
         public readonly Vector3Int Position;
         public readonly Chunk Chunk;
         public Dictionary<int, List<NavMeshPlane>> NavMeshPlanes = new Dictionary<int, List<NavMeshPlane>>();
-        private readonly bool[][] alreadyMeshed;
+        private readonly bool[] alreadyMeshed = new bool[CubeMap.RegionSizeCubed];
 
         public NavMeshChunk(Vector3Int position, Chunk chunk)
         {
             Position = position;
             Chunk = chunk;
-            alreadyMeshed = new bool[CubeMap.RegionSize][];
             var yLimit = chunk.HasAnyBlock() ? CubeMap.RegionSize : 1;
-            for (byte y = 0; y < yLimit; y++)
+            for (var y = 0; y < yLimit; y++)
             {
-                alreadyMeshed[y] = new bool[CubeMap.RegionSizeSquared];
                 NavMeshPlanes[y] = new List<NavMeshPlane>();
             }
-            Parallel.For(0, yLimit, GeneratePlanes);
+            for (var y = 0; y < yLimit; y++)
+            {
+                GeneratePlanes(y);
+            }
         }
 
         private void GeneratePlanes(int y)
         {
+            NavMeshPlanes[y] ??= new List<NavMeshPlane>();
             var planes = NavMeshPlanes[y];
             var map = GlobalSettings.Instance.Map;
             var topped = y + 1 == CubeMap.RegionSize;
             var bottomed = y == 0;
             var maxH = GlobalSettings.Instance.Map.H - 1;
             var index = 0;
-            for (byte z = 0; z < CubeMap.RegionSize; z++)
+            for (var z = 0; z < CubeMap.RegionSize; z++)
             {
-                for (byte x = 0; x < CubeMap.RegionSize; x++)
+                for (var x = 0; x < CubeMap.RegionSize; x++)
                 {
                     var pos = Position + new Vector3Int(x, y, z);
-                    if (Chunk[x, y, z].BlockType == BlockType.Air &&
-                        (pos.y == maxH || 
+                        var alreadyIndex = (((z << CubeMap.RegionSizeShift) + y) << CubeMap.RegionSizeShift) + x;
+                    if (!alreadyMeshed[alreadyIndex]) 
+                    {
+                        if (Chunk[x, y, z].BlockType == BlockType.Air &&
+                        (pos.y == maxH ||
                             (!topped && Chunk[x, y + 1, z].BlockType == BlockType.Air) ||
                             (topped && map[pos + Vector3Int.up].BlockType == BlockType.Air)
                         ) &&
@@ -50,12 +54,10 @@ namespace Assets.Scripts.PathFinding
                             (bottomed && map[pos + Vector3Int.down].BlockType != BlockType.Air)
                         )
                        )
-                    {
-                        if (!alreadyMeshed[y][index])
                         {
                             var plane = new NavMeshPlane();
-                            TryGreedyMesh(plane, x, (byte)y, z);
-                            plane.BlockMesh(alreadyMeshed[y]);
+                            TryGreedyMesh(plane, x, y, z);
+                            plane.BlockMesh(alreadyMeshed);
                             planes.Add(plane);
                         }
                     }
@@ -73,8 +75,12 @@ namespace Assets.Scripts.PathFinding
             var posY = Position.y;
             for (var y = -1; y < 2; y++)
             {
-                NavMeshPlanes.TryGetValue(pY + y, out var planes);
-                for (int i = planes.Count - 1; i >= 0; i--)
+                if (!NavMeshPlanes.TryGetValue(pY + y, out var planes))
+                {
+                    planes = new List<NavMeshPlane>();
+                    NavMeshPlanes[pY + y] = planes;
+                }
+                for (var i = planes.Count - 1; i >= 0; i--)
                 {
                     var plane = planes[i];
                     if (Mathf.Abs(plane.Y + posY - pos.y) < 2)
@@ -87,7 +93,7 @@ namespace Assets.Scripts.PathFinding
                         )
                         {
                             planes.RemoveAt(i);
-                            plane.UnblockMesh(alreadyMeshed[plane.Y]);
+                            plane.UnblockMesh(alreadyMeshed);
                             plane.RemoveConnections();
                         }
                     }
@@ -99,21 +105,21 @@ namespace Assets.Scripts.PathFinding
             if (pY < sizeM1) GeneratePlanes(pY + 1);
         }
 
-        private void TryGreedyMesh(NavMeshPlane plane, byte sx, byte y, byte sz)
+        private void TryGreedyMesh(NavMeshPlane plane, int sx, int y, int sz)
         {
             var map = GlobalSettings.Instance.Map;
             var topped = y + 1 == CubeMap.RegionSize;
             var bottomed = y == 0;
             var maxH = map.H - 1;
-            plane.minX = sx;
-            plane.minZ = sz;
-            plane.Y = y;
-            plane.maxZ = sz;
-            for (byte z = (byte)(sz + 1); z < CubeMap.RegionSize; z++)
+            plane.minX = (byte) sx;
+            plane.minZ = (byte)sz;
+            plane.Y = (byte)y;
+            plane.maxZ = (byte)sz;
+            for (var z = sz + 1; z < CubeMap.RegionSize; z++)
             {
                 var p = Position + new Vector3Int(sx, y, z);
-                var index = (z << CubeMap.RegionSizeShift) + sx;
-                if (alreadyMeshed[y][index] || !(
+                var index = (((z << CubeMap.RegionSizeShift) + y) << CubeMap.RegionSizeShift) + sx;
+                if (alreadyMeshed[index] || !(
                     Chunk[sx, y, z].BlockType == BlockType.Air &&
                     (p.y == maxH || 
                         (!topped && Chunk[sx, y + 1, z].BlockType == BlockType.Air) ||
@@ -126,18 +132,18 @@ namespace Assets.Scripts.PathFinding
                 {
                     break;
                 }
-                plane.maxZ = z;
+                plane.maxZ = (byte) z;
             }
 
-            plane.maxX = sx;
-            for (byte x = (byte)(sx + 1); x < CubeMap.RegionSize; x++)
+            plane.maxX = (byte) sx;
+            for (var x = sx + 1; x < CubeMap.RegionSize; x++)
             {
                 bool passed = true;
-                for (byte z = sz; z <= plane.maxZ; z++)
+                for (var z = sz; z <= plane.maxZ; z++)
                 {
                     var p = Position + new Vector3Int(x, y, z);
-                    var index = (z << CubeMap.RegionSizeShift) + x;
-                    if (alreadyMeshed[y][index] || !(
+                    var index = (((z << CubeMap.RegionSizeShift) + y) << CubeMap.RegionSizeShift) + x;
+                    if (alreadyMeshed[index] || !(
                         Chunk[x, y, z].BlockType == BlockType.Air &&
                         (p.y == maxH || 
                             (!topped && Chunk[x, y + 1, z].BlockType == BlockType.Air) ||
@@ -155,7 +161,7 @@ namespace Assets.Scripts.PathFinding
                 }
                 if (passed)
                 {
-                    plane.maxX = x;
+                    plane.maxX = (byte) x;
                 }
                 else break;
             }
@@ -170,14 +176,14 @@ namespace Assets.Scripts.PathFinding
             Gizmos.color = new Color(0, 0.5f, 1, opacity);
             foreach(var kv in NavMeshPlanes)
             {
-                kv.Value.ForEach(plane =>
+                foreach(var plane in kv.Value)
                 {
-                    var scale = new Vector3(plane.maxX - plane.minX + 1, plane.maxZ - plane.minZ + 1, 1);
-                    var p = Position + new Vector3Int(plane.minX, plane.Y, plane.minZ) + new Vector3(scale.x, scale.z, scale.y) / 2 + Vector3.down * 0.5f;
-                    var rot = Quaternion.Euler(90, 0, 0);
-                    Gizmos.DrawMesh(QuadMesh, p, rot, scale);
-                    Gizmos.DrawWireMesh(QuadMesh, p, rot, scale);
-                });
+                        var scale = new Vector3(plane.maxX - plane.minX + 1, plane.maxZ - plane.minZ + 1, 1);
+                        var p = Position + new Vector3Int(plane.minX, plane.Y, plane.minZ) + new Vector3(scale.x, scale.z, scale.y) / 2 + Vector3.down * 0.45f;
+                        var rot = Quaternion.Euler(90, 0, 0);
+                        Gizmos.DrawMesh(QuadMesh, p, rot, scale);
+                        Gizmos.DrawWireMesh(QuadMesh, p, rot, scale);
+                }
             }
             Gizmos.color = color;
         }

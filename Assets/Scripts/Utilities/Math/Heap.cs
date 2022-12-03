@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace Assets.Scripts.Utilities
+namespace Assets.Scripts.Utilities.Math
 {
     /// <summary>
     ///     Class utilizing the min-max heap data structure.

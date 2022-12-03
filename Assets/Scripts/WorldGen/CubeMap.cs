@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Utilities;
+﻿using Assets.Scripts.ConfigScripts;
+using Assets.Scripts.Utilities;
 using Assets.Scripts.WorldGen.RandomUpdaters;
 using System;
 using System.Collections.Generic;
@@ -216,7 +217,7 @@ namespace Assets.Scripts.WorldGen
                     dataMeshes.Add((kv.Value.GenerateDataMesh(), kv.Key * RegionSize));
                 }
             }
-            if (dataMeshes.Count > 0) Debug.Log($"Generated {dataMeshes.Count} meshes data in {updateWatcher.ElapsedMilliseconds}ms");
+            if (dataMeshes.Count > 0) DynamicLogger.Log("CubeMap", $"Generated {dataMeshes.Count} meshes data in {updateWatcher.ElapsedMilliseconds}ms");
             updateWatcher.Restart();
 
             var vertexDescriptor = new VertexAttributeDescriptor(VertexAttribute.Position, VertexAttributeFormat.UInt8, 4);
@@ -231,14 +232,14 @@ namespace Assets.Scripts.WorldGen
                 LoadChunkIntoMesh(ref mesh, chunkMesh.vertexList, chunkMesh.indexList, ref vertexDescriptor, ref bounds);
                 Meshes[position] = mesh;
             }
-            if (dataMeshes.Count > 0) Debug.Log($"Updated {dataMeshes.Count} meshes in {updateWatcher.ElapsedMilliseconds}ms");
+            if (dataMeshes.Count > 0) DynamicLogger.Log("CubeMap", $"Updated {dataMeshes.Count} meshes in {updateWatcher.ElapsedMilliseconds}ms");
             updateWatcher.Stop();
         }
 
         /// <summary>
         /// Loads the chunk data into a specified mesh.
         /// </summary>
-        private void LoadChunkIntoMesh(ref Mesh m, List<ChunkVertex> vertexList, List<int> indexList, ref VertexAttributeDescriptor descriptor, ref Bounds bounds)
+        private void LoadChunkIntoMesh(ref Mesh m, List<ChunkVertex> vertexList, List<ushort> indexList, ref VertexAttributeDescriptor descriptor, ref Bounds bounds)
         {
             if (vertexList.Count > 0)
             {
@@ -250,7 +251,7 @@ namespace Assets.Scripts.WorldGen
                 }
                 m.SetVertexBufferParams(vertexList.Count, descriptor);
                 m.SetVertexBufferData(vertexList, 0, 0, vertexList.Count, flags: (MeshUpdateFlags)15);
-                m.SetIndices(indexList.ConvertAll(i => (ushort)i), MeshTopology.Quads, 0, false);
+                m.SetIndices(indexList, MeshTopology.Quads, 0, false);
                 m.UploadMeshData(false);
             }
             else if (m) m.Clear(false);

@@ -1,4 +1,4 @@
-﻿using Assets.Scripts.Utilities;
+﻿using Assets.Scripts.ConfigScripts;
 using Assets.Scripts.Village;
 using System;
 using System.Collections.Generic;

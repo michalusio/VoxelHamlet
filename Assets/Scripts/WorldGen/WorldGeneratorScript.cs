@@ -1,8 +1,10 @@
-﻿using Assets.Scripts.Utilities;
+﻿using Assets.Scripts.ConfigScripts;
+using Assets.Scripts.Utilities;
 using Assets.Scripts.Village;
 using Assets.Scripts.WorldGen.GenSteps;
 using Assets.Scripts.WorldGen.RandomUpdaters;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 using Stopwatch = System.Diagnostics.Stopwatch;
@@ -25,7 +27,6 @@ namespace Assets.Scripts.WorldGen
         {
             new PlaceTerrain(32, 52),
             new PlaceOres(0.001f),
-            //new ChopBottom(),
             new PlaceTerrainDetails(20),
             new PlaceTrees(0.001f)
         };
@@ -55,24 +56,23 @@ namespace Assets.Scripts.WorldGen
                 Destroy(gnome.gameObject);
             }
 
-            GlobalSettings.Instance.Map = new CubeMap(W, 200, D);
+            GlobalSettings.Instance.Map = new CubeMap(W, 64, D);
             GlobalSettings.Instance.Map.Updaters.Add(new GrassSpreadUpdater());
             newWatch.Stop();
-            Debug.Log("Instantiating: " + newWatch.ElapsedMilliseconds);
-
+            DynamicLogger.Log("WorldGen", "Instantiating:", newWatch.ElapsedMilliseconds);
 
             foreach (var step in Steps)
             {
                 var perlinWatch = Stopwatch.StartNew();
                 step.Commit(GlobalSettings.Instance.Map);
                 perlinWatch.Stop();
-                Debug.Log($"{step.GetType().Name}: {perlinWatch.ElapsedMilliseconds}");
+                DynamicLogger.Log("WorldGen", step.GetType().Name, perlinWatch.ElapsedMilliseconds);
             }
 
             GlobalSettings.Instance.Map.UpdateMeshes();
             
             fullWatch.Stop();
-            Debug.Log("Full remake: " + fullWatch.ElapsedMilliseconds);
+            DynamicLogger.Log("WorldGen", "Full remake:", fullWatch.ElapsedMilliseconds);
         }
 
         void SpawnVillagers()
@@ -84,6 +84,14 @@ namespace Assets.Scripts.WorldGen
         {
             if (GlobalSettings.Instance == null || GlobalSettings.Instance.Map == null) return;
             GlobalSettings.Instance.Map.DrawMeshes(Camera.main, GlobalSettings.Instance.MapMaterial);
+#if UNITY_EDITOR
+            foreach (SceneView view in SceneView.sceneViews)
+            {
+                if (view.hasFocus) {
+                    GlobalSettings.Instance.Map.DrawMeshes(view.camera, GlobalSettings.Instance.MapMaterial);
+                }
+            }
+#endif
             if (Time.timeScale > 0.5f)
             {
                 GlobalSettings.Instance.Map.RunUpdaters();

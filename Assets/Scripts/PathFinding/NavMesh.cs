@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Utilities;
+﻿using Assets.Scripts.ConfigScripts;
+using Assets.Scripts.Utilities;
 using Assets.Scripts.WorldGen;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,15 +16,15 @@ namespace Assets.Scripts.PathFinding
 
         void Start()
         {
-            var navMeshWatcher = System.Diagnostics.Stopwatch.StartNew();
 #if UNITY_EDITOR
             if (!NavMeshChunk.QuadMesh) return;
 #endif
+            var navMeshWatcher = System.Diagnostics.Stopwatch.StartNew();
             NavChunks = GlobalSettings.Instance.Map.GetChunks
                 .ToDictionary(kv => kv.Key * CubeMap.RegionSize, kv => new NavMeshChunk(kv.Key * CubeMap.RegionSize, kv.Value));
             navMeshWatcher.Stop();
-            Debug.Log($"NavMesh generation time: {navMeshWatcher.ElapsedMilliseconds}ms");
-            Debug.Log($"NavMesh planes: {NavChunks.Values.Select(v => v.NavMeshPlanes.Count).Sum()}");
+            DynamicLogger.Log("NavMesh", $"Generation time: {navMeshWatcher.ElapsedMilliseconds}ms");
+            DynamicLogger.Log("NavMesh", $"Planes: {NavChunks.Values.SelectMany(v => v.NavMeshPlanes.Select(kv => kv.Value.Count)).Sum()} in {NavChunks.Count} chunks");
         }
 
         public void NotifyBlockChanged(Vector3Int pos)

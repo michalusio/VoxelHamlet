@@ -1,6 +1,6 @@
-﻿using Assets.Scripts.UI;
+﻿using Assets.Scripts.ConfigScripts;
+using Assets.Scripts.UI;
 using Assets.Scripts.WorldGen;
-using System;
 using UnityEngine;
 
 namespace Assets.Scripts.Utilities
@@ -17,8 +17,8 @@ namespace Assets.Scripts.Utilities
             var dz = Mathf.Abs(end.z - start.z);
             var dy = end.y - start.y;
 
-            var xSign = Math.Sign(end.x - start.x);
-            var zSign = Math.Sign(end.z - start.z);
+            var xSign = System.Math.Sign(end.x - start.x);
+            var zSign = System.Math.Sign(end.z - start.z);
 
             var dxdz = dx > dz;
             var chosenLength = dxdz ? dx : dz;
