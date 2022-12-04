@@ -58,6 +58,7 @@ namespace Assets.Scripts.PathFinding
                             var plane = new NavMeshPlane();
                             TryGreedyMesh(plane, x, y, z);
                             plane.BlockMesh(alreadyMeshed);
+                            plane.AddConnections(this);
                             planes.Add(plane);
                         }
                     }
@@ -173,16 +174,27 @@ namespace Assets.Scripts.PathFinding
         public void RenderGizmo(float opacity)
         {
             var color = Gizmos.color;
-            Gizmos.color = new Color(0, 0.5f, 1, opacity);
+            var nowColor = new Color(0, 0.5f, 1, opacity);
+            var lineColor = new Color(1, 0, 0, opacity);
+            Gizmos.color = nowColor;
             foreach(var kv in NavMeshPlanes)
             {
                 foreach(var plane in kv.Value)
                 {
-                        var scale = new Vector3(plane.maxX - plane.minX + 1, plane.maxZ - plane.minZ + 1, 1);
-                        var p = Position + new Vector3Int(plane.minX, plane.Y, plane.minZ) + new Vector3(scale.x, scale.z, scale.y) / 2 + Vector3.down * 0.45f;
-                        var rot = Quaternion.Euler(90, 0, 0);
-                        Gizmos.DrawMesh(QuadMesh, p, rot, scale);
-                        Gizmos.DrawWireMesh(QuadMesh, p, rot, scale);
+                    var scale = new Vector3(plane.maxX - plane.minX + 1, plane.maxZ - plane.minZ + 1, 1);
+                    var p = Position + new Vector3Int(plane.minX, plane.Y, plane.minZ) + new Vector3(scale.x, scale.z, scale.y) / 2 + Vector3.down * 0.45f;
+                    var rot = Quaternion.Euler(90, 0, 0);
+                    Gizmos.DrawMesh(QuadMesh, p, rot, scale);
+                    Gizmos.DrawWireMesh(QuadMesh, p, rot, scale);
+                    Gizmos.color = lineColor;
+                    foreach (var con in plane.Neighbours)
+                    {
+                        Gizmos.DrawLine(
+                            new Vector3(plane.minX + plane.maxX + 1, plane.Y * 2 + 0.1f, plane.minZ + plane.maxZ + 1) / 2,
+                            new Vector3(con.minX + con.maxX + 1, con.Y * 2 + 0.1f, con.minZ + con.maxZ + 1) / 2
+                        );
+                    }
+                    Gizmos.color = nowColor;
                 }
             }
             Gizmos.color = color;

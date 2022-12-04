@@ -77,8 +77,7 @@ namespace Assets.Scripts.WorldGen
                     return chunk[x & r, y & r, z & r];
                 } else
                 {
-                    throw new Exception($"{x}, {y}, {z}");
-                    //return default;
+                    return default;
                 }
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]

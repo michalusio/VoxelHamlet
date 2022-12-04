@@ -25,6 +25,7 @@ namespace Assets.Scripts.PathFinding
             navMeshWatcher.Stop();
             DynamicLogger.Log("NavMesh", $"Generation time: {navMeshWatcher.ElapsedMilliseconds}ms");
             DynamicLogger.Log("NavMesh", $"Planes: {NavChunks.Values.SelectMany(v => v.NavMeshPlanes.Select(kv => kv.Value.Count)).Sum()} in {NavChunks.Count} chunks");
+            DynamicLogger.Log("NavMesh", $"Connections:", NavChunks.Values.SelectMany(v => v.NavMeshPlanes.SelectMany(kv => kv.Value).Select(v => v.Neighbours.Count)).Sum() / 2);
         }
 
         public void NotifyBlockChanged(Vector3Int pos)
