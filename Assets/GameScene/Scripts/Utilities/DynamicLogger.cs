@@ -10,6 +10,7 @@ namespace Assets.Scripts.Utilities
     }
 
     [ExecuteAlways]
+    [DefaultExecutionOrder(-1000)]
     public class DynamicLogger: MonoBehaviour
     {
         [Range(0, 30)]

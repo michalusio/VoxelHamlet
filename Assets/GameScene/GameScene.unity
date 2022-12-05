@@ -844,8 +844,8 @@ MonoBehaviour:
   GnomePrefab: {fileID: 7147820766737573573, guid: 6efd0d34d4a00b44389d6e9cb56a2897,
     type: 3}
   globalSettings: {fileID: 11400000, guid: f06eaf2fc9eb5024ba8249ddb8569cd6, type: 2}
-  W: 64
-  D: 64
+  W: 256
+  D: 256
 --- !u!114 &163694099
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4444,7 +4444,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Type: 0
-  RotationCenter: {x: 0, y: 0, z: 0}
+  RotationCenter: {x: 93.5026, y: 101.4, z: 39.097412}
   RotationDistance: 10
 --- !u!114 &963194233
 MonoBehaviour:

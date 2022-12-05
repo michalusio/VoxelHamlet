@@ -12,7 +12,7 @@ namespace Assets.Scripts.PathFinding
         [Range(0f, 1f)]
         public float MeshOpacity = 0;
 
-        private Dictionary<Vector3Int, NavMeshChunk> NavChunks = new Dictionary<Vector3Int, NavMeshChunk>();
+        public Dictionary<Vector3Int, NavMeshChunk> NavChunks = new Dictionary<Vector3Int, NavMeshChunk>();
 
         void Start()
         {
@@ -22,6 +22,14 @@ namespace Assets.Scripts.PathFinding
             var navMeshWatcher = System.Diagnostics.Stopwatch.StartNew();
             NavChunks = GlobalSettings.Instance.Map.GetChunks
                 .ToDictionary(kv => kv.Key * CubeMap.RegionSize, kv => new NavMeshChunk(kv.Key * CubeMap.RegionSize, kv.Value));
+            foreach (var chunk in NavChunks)
+            {
+                chunk.Value.Init(this);
+            }
+            foreach (var chunk in NavChunks)
+            {
+                chunk.Value.EnsureConnectivity();
+            }
             navMeshWatcher.Stop();
             DynamicLogger.Log("NavMesh", $"Generation time: {navMeshWatcher.ElapsedMilliseconds}ms");
             DynamicLogger.Log("NavMesh", $"Planes: {NavChunks.Values.SelectMany(v => v.NavMeshPlanes.Select(kv => kv.Value.Count)).Sum()} in {NavChunks.Count} chunks");
@@ -65,7 +73,7 @@ namespace Assets.Scripts.PathFinding
                 for (int z = -2; z <= 2; z++)
                 {
                     diffKey.z = z;
-                    for (int y = -2; y <= 2; y++)
+                    for (int y = -4; y <= 4; y++)
                     {
                         diffKey.y = y;
                         var chunkKey = (cameraChunkKey + diffKey) * regionSize;

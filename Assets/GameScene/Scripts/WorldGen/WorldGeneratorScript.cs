@@ -22,6 +22,8 @@ namespace Assets.Scripts.WorldGen
         public int W = 512;
         [Range(64, 16384)]
         public int D = 512;
+        [Range(64, 256)]
+        public int H = 128;
 
         private readonly List<IGeneratorStep> Steps = new List<IGeneratorStep>
         {
@@ -56,7 +58,7 @@ namespace Assets.Scripts.WorldGen
                 Destroy(gnome.gameObject);
             }
 
-            GlobalSettings.Instance.Map = new CubeMap(W, 64, D);
+            GlobalSettings.Instance.Map = new CubeMap(W, H, D);
             GlobalSettings.Instance.Map.Updaters.Add(new GrassSpreadUpdater());
             newWatch.Stop();
             DynamicLogger.Log("WorldGen", "Instantiating:", newWatch.ElapsedMilliseconds);

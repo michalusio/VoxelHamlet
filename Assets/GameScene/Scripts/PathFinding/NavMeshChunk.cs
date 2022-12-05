@@ -5,18 +5,26 @@ using UnityEngine;
 
 namespace Assets.Scripts.PathFinding
 {
-    internal class NavMeshChunk
+    public class NavMeshChunk
     {
         public readonly Vector3Int Position;
-        public readonly Chunk Chunk;
         public Dictionary<int, List<NavMeshPlane>> NavMeshPlanes = new Dictionary<int, List<NavMeshPlane>>();
+        public NavMeshChunk ChunkNX, ChunkNZ; //Should probably add upper and lower chunks too, as without them the navmesh may break.
+
+        private readonly Chunk Chunk;
         private readonly bool[] alreadyMeshed = new bool[CubeMap.RegionSizeCubed];
 
         public NavMeshChunk(Vector3Int position, Chunk chunk)
         {
             Position = position;
             Chunk = chunk;
-            var yLimit = chunk.HasAnyBlock() ? CubeMap.RegionSize : 1;
+        }
+
+        public void Init(NavMesh mesh)
+        {
+            mesh.NavChunks.TryGetValue(Position + CubeMap.RegionSize * Vector3Int.left, out ChunkNX);
+            mesh.NavChunks.TryGetValue(Position + CubeMap.RegionSize * Vector3Int.back, out ChunkNZ);
+            var yLimit = Chunk.HasAnyBlock() ? CubeMap.RegionSize : 1;
             for (var y = 0; y < yLimit; y++)
             {
                 NavMeshPlanes[y] = new List<NavMeshPlane>();
@@ -24,6 +32,14 @@ namespace Assets.Scripts.PathFinding
             for (var y = 0; y < yLimit; y++)
             {
                 GeneratePlanes(y);
+            }
+        }
+
+        public void EnsureConnectivity()
+        {
+            foreach(var kv in NavMeshPlanes)
+            {
+                kv.Value.ForEach(plane => plane.AddConnections(this));
             }
         }
 
@@ -55,7 +71,7 @@ namespace Assets.Scripts.PathFinding
                         )
                        )
                         {
-                            var plane = new NavMeshPlane();
+                            var plane = new NavMeshPlane(this);
                             TryGreedyMesh(plane, x, y, z);
                             plane.BlockMesh(alreadyMeshed);
                             plane.AddConnections(this);
@@ -190,8 +206,8 @@ namespace Assets.Scripts.PathFinding
                     foreach (var con in plane.Neighbours)
                     {
                         Gizmos.DrawLine(
-                            new Vector3(plane.minX + plane.maxX + 1, plane.Y * 2 + 0.1f, plane.minZ + plane.maxZ + 1) / 2,
-                            new Vector3(con.minX + con.maxX + 1, con.Y * 2 + 0.1f, con.minZ + con.maxZ + 1) / 2
+                            plane.Chunk.Position + new Vector3(plane.minX + plane.maxX + 1, plane.Y * 2 + 0.1f, plane.minZ + plane.maxZ + 1) / 2,
+                            con.Chunk.Position + new Vector3(con.minX + con.maxX + 1, con.Y * 2 + 0.1f, con.minZ + con.maxZ + 1) / 2
                         );
                     }
                     Gizmos.color = nowColor;
