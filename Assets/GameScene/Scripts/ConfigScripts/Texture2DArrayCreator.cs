@@ -20,7 +20,11 @@ namespace Assets.Scripts.ConfigScripts
             int height = firstTexture.height;
             var format = firstTexture.format;
 
-            if (Textures.Any(t => t && (t.width != width || t.height != height || t.format != format))) return null;
+            var incorrectTexture = Textures.FirstOrDefault(t => t && (t.width != width || t.height != height || t.format != format || !t.isReadable));
+            if (incorrectTexture != null)
+            {
+                throw new System.Exception($"Incorrect texture width/height/format, or not readable: {incorrectTexture.name}");
+            }
 
             Array = new Texture2DArray(width, height, Textures.Count, format, MIP_COUNT, false)
             {

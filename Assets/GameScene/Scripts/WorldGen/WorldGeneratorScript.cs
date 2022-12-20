@@ -25,13 +25,12 @@ namespace Assets.Scripts.WorldGen
         [Range(64, 256)]
         public int H = 128;
 
-        private readonly List<IGeneratorStep> Steps = new List<IGeneratorStep>
-        {
-            new PlaceTerrain(32, 52),
-            new PlaceOres(0.001f),
-            new PlaceTerrainDetails(20),
-            new PlaceTrees(0.001f)
-        };
+        private readonly int Seed = CrossSceneData.Seed;
+        private readonly System.Random rng = new System.Random(CrossSceneData.Seed);
+        private readonly int MountainModifier = CrossSceneData.MountainModifier;
+        private readonly int ForestModifier = CrossSceneData.ForestModifier;
+
+        private List<IGeneratorStep> Steps;
 
         void Start()
         {
@@ -44,6 +43,13 @@ namespace Assets.Scripts.WorldGen
 
         public void RemakeWorld()
         {
+            Steps = new List<IGeneratorStep>
+            {
+                new PlaceTerrain(Seed, MountainModifier, ForestModifier, 32, 64),
+                new PlaceOres(rng, 0.001f),
+                new PlaceTerrainDetails(rng, 20),
+                new PlaceTrees(rng, 0.001f)
+            };
             GlobalSettings.Instance.MapMaterial.SetColor("_AddColor", Color.white);
             GlobalSettings.Instance.MapMaterial.SetTexture("_TextureMapArray", GlobalSettings.Instance.TextureContainer.GetAlbedoArray());
             GlobalSettings.Instance.EditMapMaterial = new Material(GlobalSettings.Instance.MapMaterial);

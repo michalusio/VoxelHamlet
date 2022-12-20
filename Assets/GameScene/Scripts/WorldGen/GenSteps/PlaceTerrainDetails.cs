@@ -4,10 +4,12 @@ namespace Assets.Scripts.WorldGen.GenSteps
 {
     public class PlaceTerrainDetails : IGeneratorStep
     {
+        private readonly System.Random Rng;
         private readonly int Tries;
 
-        public PlaceTerrainDetails(int tries)
+        public PlaceTerrainDetails(System.Random rng, int tries)
         {
+            Rng = rng;
             Tries = tries;
         }
 
@@ -17,8 +19,8 @@ namespace Assets.Scripts.WorldGen.GenSteps
             {
                 for(int i = 0; i < Tries; i++)
                 {
-                    var randomX = Random.Range(0, map.W);
-                    var randomZ = Random.Range(0, map.D);
+                    var randomX = Rng.Next(0, map.W);
+                    var randomZ = Rng.Next(0, map.D);
                     var randomPos = new Vector3Int(randomX, map.GetHighestYAt(randomX, randomZ), randomZ);
                     if (map[randomPos].BlockType == BlockType.Grass)
                     {

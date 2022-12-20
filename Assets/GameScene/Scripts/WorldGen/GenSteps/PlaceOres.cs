@@ -1,33 +1,32 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Assets.Scripts.WorldGen.GenSteps
 {
     public class PlaceOres : IGeneratorStep
     {
+        private readonly Random Rng;
         private readonly float oreDensity; // ore density per block cubed
         private const float GOLD_CHANCE = 0.2f;
         private const float IRON_CHANCE = 0.3f;
-        public PlaceOres(float oreDensity)
+        public PlaceOres(Random rng, float oreDensity)
         {
+            Rng = rng;
             this.oreDensity = oreDensity;
         }
 
-        private readonly ConcurrentDictionary<int, Random> ThreadRandoms = new ConcurrentDictionary<int, Random>();
 
         public void Commit(CubeMap map)
         {
             var oreTries = (long)((long)map.W * map.H * map.D * (double)oreDensity);
             for (long i = 0; i < oreTries; i++)
             {
-                var random = ThreadRandoms.GetOrAdd(Thread.CurrentThread.ManagedThreadId, _ => new Random(new object().GetHashCode()));
-                var x = random.Next(0, map.W - 1);
-                var z = random.Next(0, map.D - 1);
-                var y = random.Next(0, UnityEngine.Mathf.Min(map.GetHighestYAt(x, z), map.H - 1));
+                var x = Rng.Next(0, map.W - 1);
+                var z = Rng.Next(0, map.D - 1);
+                var y = Rng.Next(0, UnityEngine.Mathf.Min(map.GetHighestYAt(x, z), map.H - 1));
 
-                var blockRoll = random.NextDouble();
+                var blockRoll = Rng.NextDouble();
                 BlockType chosenBlock = BlockType.CoalOre;
                 if (blockRoll < GOLD_CHANCE)
                 {

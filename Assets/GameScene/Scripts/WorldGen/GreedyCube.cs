@@ -1,7 +1,7 @@
-﻿using Assets.Scripts.Entities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using UnityEngine;
 
 namespace Assets.Scripts.WorldGen
 {
@@ -73,6 +73,7 @@ namespace Assets.Scripts.WorldGen
 
             v000.blockIndex = v001.blockIndex = v010.blockIndex = v011.blockIndex =
             v100.blockIndex = v101.blockIndex = v110.blockIndex = v111.blockIndex = (byte)id;
+
             if ((ORFaceCount & 8) > 0)
             {
                 vertexList.Add(v000);

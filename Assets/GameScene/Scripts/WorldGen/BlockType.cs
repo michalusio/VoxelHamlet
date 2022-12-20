@@ -3,15 +3,23 @@
     public enum BlockType : byte
     {
         Air = 0,
-        Stone = 1,
-        Dirt = 2,
-        Grass = 3,
-        Log = 4,
-        Hay = 10,
 
-        IronOre = 12,
-        GoldOre = 13,
-        CoalOre = 14,
+        Stone = 10,
+
+        Dirt = 20,
+
+        Grass = 30,
+        ForestGrass = 31,
+
+        Log = 40,
+
+        Hay = 50,
+
+        IronOre = 60,
+
+        GoldOre = 70,
+
+        CoalOre = 80,
 
         Entity = 255
     }
