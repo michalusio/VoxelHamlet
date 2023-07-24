@@ -20,6 +20,6 @@ You also cannot sell, re-sell, market or copyright the game and/or the source co
 
 Michał Isalski is the righteous copyright holder for the game's code.
 
-Daniel Ligocki is the rightous copyright holder for the models and animations used.
+Daniel Ligocki is the righteous copyright holder for the models and animations used.
 
 The licenses for the libraries used are in the same folder as the library itself.
